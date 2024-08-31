@@ -64,17 +64,19 @@ end
 
 function Frame:GetBagFamily(bag)
 	if bag > NUM_BAG_SLOTS and bag <= Addon.NumBags or bag == REAGENTBANK_CONTAINER then
-		return REAGENTBANK_CONTAINER
+		return 0x80000
 	elseif bag == KEYRING_CONTAINER then
 		return 9
+	elseif bag > Addon.LastBankBag then
+		return -1
 	elseif bag > BACKPACK_CONTAINER then
 		if self:IsCached(bag) then
 			local data = self:GetBagInfo(bag)
 			if data and data.link then
-				return GetItemFamily('item:' .. data.link)
+				return GetItemFamily('item:' .. data.link) or 0
 			end
 		else
-			return select(2, C.GetContainerNumFreeSlots(bag))
+			return select(2, C.GetContainerNumFreeSlots(bag)) or 0
 		end
 	end
 	return 0

@@ -822,6 +822,86 @@ function MoveAny:UpdateHiddenFrames()
 	end
 end
 
+function MoveAny:IsPresetProfileActive()
+	if EditModeManagerFrame then
+		if not EditModeManagerFrame:IsInitialized() or EditModeManagerFrame.layoutApplyInProgress then return true end
+		local layoutInfo = EditModeManagerFrame:GetActiveLayoutInfo()
+		local isPresetLayout = layoutInfo.layoutType == Enum.EditModeLayoutType.Preset
+
+		return isPresetLayout
+	end
+
+	return true
+end
+
+--[[if MoveAny:GetWoWBuild() == "RETAIL" then
+	C_Timer.After(
+		1,
+		function()
+			local MA_HelpProfileFrame = CreateFrame("FRAME", "MoveAnyHelpFrame")
+			MA_HelpProfileFrame:SetParent(MoveAny:GetMainPanel())
+			MA_HelpProfileFrame:SetSize(1200, 200)
+			MA_HelpProfileFrame:ClearAllPoints()
+			MA_HelpProfileFrame:SetPoint("TOP", MoveAny:GetMainPanel(), "TOP", 0, -100)
+			MA_HelpProfileFrame:EnableMouse(false)
+			MA_HelpProfileFrame.t1 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
+			MA_HelpProfileFrame.t1:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, 0)
+			local font, _, fontFlags = MA_HelpProfileFrame.t1:GetFont()
+			MA_HelpProfileFrame.t1:SetFont(font, 32, fontFlags)
+			MA_HelpProfileFrame.t1:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE1"))
+			MA_HelpProfileFrame.t2 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
+			MA_HelpProfileFrame.t2:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, -40)
+			local font2, _, fontFlags2 = MA_HelpProfileFrame.t2:GetFont()
+			MA_HelpProfileFrame.t2:SetFont(font2, 24, fontFlags2)
+			MA_HelpProfileFrame.t2:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE2"))
+			MA_HelpProfileFrame.t3 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
+			MA_HelpProfileFrame.t3:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, -90)
+			local font3, _, fontFlags3 = MA_HelpProfileFrame.t3:GetFont()
+			MA_HelpProfileFrame.t3:SetFont(font3, 32, fontFlags3)
+			MA_HelpProfileFrame.t3:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE3"))
+			function MoveAny:ThinkHelpFrame()
+				if MoveAny:IsPresetProfileActive() then
+					MA_HelpProfileFrame:Show()
+					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
+				else
+					MA_HelpProfileFrame:Hide()
+					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
+				end
+			end
+
+			MoveAny:ThinkHelpFrame()
+		end
+	)
+end]]
+if MoveAny:GetWoWBuild() == "RETAIL" then
+	C_Timer.After(
+		1,
+		function()
+			local lastCheck = false
+			local wasPreset = MoveAny:IsPresetProfileActive()
+			function MoveAny:ThinkHelpFrame()
+				local isPreset = MoveAny:IsPresetProfileActive()
+				if lastCheck ~= isPreset then
+					lastCheck = isPreset
+					if isPreset then
+						MoveAny:MSG(MoveAny:GT("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE3"))
+					elseif wasPreset then
+						MoveAny:MSG("ALL GOOD.")
+					end
+				end
+
+				if isPreset then
+					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
+				else
+					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
+				end
+			end
+
+			MoveAny:ThinkHelpFrame()
+		end
+	)
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1306,9 +1386,14 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:SetEleSize(name, sw, sh)
 	end
 
+	local pointFunc = "SetPoint"
+	if frame.SetPointBase then
+		pointFunc = "SetPointBase"
+	end
+
 	hooksecurefunc(
 		frame,
-		"SetPoint",
+		pointFunc,
 		function(sel, ...)
 			if sel.elesetpoint then return end
 			--sel.layoutApplyInProgress = true
@@ -1418,6 +1503,8 @@ local invehicle = nil
 local incombat = nil
 local inpetbattle = nil
 local isstealthed = nil
+local ischatclosed = nil
+local lastchatab = nil
 local lastEle = nil
 local lastSize = 0
 local fullHP = false
@@ -1444,6 +1531,23 @@ function MoveAny:IsInPetBattle()
 	return inPetBattle
 end
 
+function MoveAny:IsChatClosed()
+	for i = 1, 12 do
+		if _G["ChatFrame" .. i .. "EditBox"] and _G["ChatFrame" .. i .. "EditBox"]:HasFocus() then return false end
+	end
+
+	return true
+end
+
+function MoveAny:CurrentChatTab()
+	for i = 1, 12 do
+		local ct = _G["ChatFrame" .. i .. "EditBox"]
+		if ct and ct:IsShown() then return i end
+	end
+
+	return 0
+end
+
 function MoveAny:CheckAlphas()
 	if incombat ~= InCombatLockdown() then
 		incombat = InCombatLockdown()
@@ -1465,6 +1569,14 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	elseif IsStealthed and isstealthed ~= IsStealthed() then
 		isstealthed = IsStealthed()
+		MoveAny:UpdateAlphas()
+	elseif MoveAny.IsChatClosed and ischatclosed ~= MoveAny:IsChatClosed() then
+		ischatclosed = MoveAny:IsChatClosed()
+		if ischatclosed then
+			MoveAny:UpdateAlphas()
+		end
+	elseif MoveAny.CurrentChatTab and lastchatab ~= MoveAny:CurrentChatTab() then
+		lastchatab = MoveAny:CurrentChatTab()
 		MoveAny:UpdateAlphas()
 	end
 

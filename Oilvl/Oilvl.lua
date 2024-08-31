@@ -1,3 +1,4 @@
+-- remember goto find "cfg.raidmenuid = 1" and remove it when second raid launch
 local cfg
 local L = OILVL_L
 local LibDD
@@ -232,14 +233,63 @@ local bagilvltime=0
 
 --local SL, _, _ = EJ_GetTierInfo(10);
 
-local CNname, _, _, _, _, _, _ = EJ_GetInstanceInfo(1200); -- Vault of the Incarnates
-local CNname2, _, _, _, _, _, _ = EJ_GetInstanceInfo(1208); -- Aberrus, the Shadowed Crucible
-local CNname3, _, _, _, _, _, _ = EJ_GetInstanceInfo(1207); -- Amirdrassil, the Dream's Hope
+local CNname, _, _, _, _, _, _ = EJ_GetInstanceInfo(1273); -- Nerub-ar Palace
 
 -- Each raid has its own entry,
 -- 1-4 are Raid Finder, Normal, Heroic, and Mythic kills statistic ID
 
 local OSTATCN = {
+	{
+		40267,
+		40268,
+		40269,
+		40270,
+	},
+	{
+		40271,
+		40272,
+		40273,
+		40274,
+	},
+	{
+		40275,
+		40276,
+		40277,
+		40278,
+	},
+	{
+		40279,
+		40280,
+		40281,
+		40282,
+	},
+	{
+		40283,
+		40284,
+		40285,
+		40286,
+	},
+	{
+		40287,
+		40288,
+		40289,
+		40290,
+	},
+	{
+		40291,
+		40292,
+		40293,
+		40294,
+	},
+	{
+		40295,
+		40296,
+		40297,
+		40298,
+	}	
+}
+
+local DOSTATCN = {
 	{
 		16359, -- [1]
 		16371, -- [2]
@@ -290,7 +340,7 @@ local OSTATCN = {
 	}, -- [8]
 }
 
-local OSTATCN2 = {
+local DOSTATCN2 = {
 	{
 		18180, -- [1]
 		18189, -- [2]
@@ -347,7 +397,7 @@ local OSTATCN2 = {
 	}, -- [9] Scalecommander Sarkareth
 }
 
-local OSTATCN3 =
+local DOSTATCN3 =
 {
 	{
 		19348, -- [1]
@@ -640,6 +690,7 @@ function ORfbIlvl(ounit)
 				oilvlframedata.mps[tonumber(ounit)] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 				--oilvlframedata.ilvl[tonumber(ounit)][1] = ""
 				oilvl(OTCurrent2)
+				--oilvlSaveItemLevel(1)
 			end
 		elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
 			if ounit == "1" or ounit == 1 then
@@ -652,6 +703,7 @@ function ORfbIlvl(ounit)
 					oilvlframedata.mps[1] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 					--oilvlframedata.ilvl[1][1] = ""
 					oilvl(OTCurrent2)
+					--oilvlSaveItemLevel(1)
 				end
 			else
 				OTCurrent = "OILVLRAIDFRAME"..ounit;
@@ -663,6 +715,7 @@ function ORfbIlvl(ounit)
 					oilvlframedata.mps[tonumber(ounit)] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 					--oilvlframedata.ilvl[tonumber(ounit)][1] = ""
 					oilvl(OTCurrent2)
+					--oilvlSaveItemLevel(1)
 				end
 			end
 		elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
@@ -676,6 +729,7 @@ function ORfbIlvl(ounit)
 					oilvlframedata.mps[1] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 					--oilvlframedata.ilvl[1][1] = ""
 					oilvl(OTCurrent2)
+					--oilvlSaveItemLevel(1)
 				end
 			else
 				OTCurrent = "OILVLRAIDFRAME"..ounit;
@@ -687,6 +741,7 @@ function ORfbIlvl(ounit)
 					oilvlframedata.mps[tonumber(ounit)] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 					--oilvlframedata.ilvl[tonumber(ounit)][1] = ""
 					oilvl(OTCurrent2)
+					--oilvlSaveItemLevel(1)
 				end
 			end
 		else
@@ -699,6 +754,7 @@ function ORfbIlvl(ounit)
 				oilvlframedata.mps[1] = omp(OTCurrent2) and omp(OTCurrent2).currentSeasonScore or "";
 				--oilvlframedata.ilvl[1][1] = ""
 				oilvl(OTCurrent2)
+				--oilvlSaveItemLevel(1)
 			end
 		end
 	end
@@ -1668,8 +1724,8 @@ function oilvlcheckrange()
 				msg = _G["OilvlTooltipTextLeft"..i]:GetText();
 				if msg then
 					if cfg.raidmenuid == 1 then msg = msg:find(CNname); if msg then break end end
-					if cfg.raidmenuid == 2 then msg = msg:find(CNname2); if msg then break end end
-					if cfg.raidmenuid == 3 then msg = msg:find(CNname3); if msg then break end end
+					--if cfg.raidmenuid == 2 then msg = msg:find(CNname2); if msg then break end end
+					--if cfg.raidmenuid == 3 then msg = msg:find(CNname3); if msg then break end end
 				end
 			end
 			if not msg then
@@ -2945,6 +3001,23 @@ function OilvlGetStatisticId(OCategory, ORaidName, OTable, Oprint)
 	end
 end
 
+function ooooooooo()
+	for _, CategoryId in pairs(GetStatisticsCategoryList()) do
+		local Title, ParentCategoryId, Something
+		Title, ParentCategoryId, Something = GetCategoryInfo(CategoryId)
+		print(Title .. ":" .. CategoryId)
+	end	
+end
+
+function pppppppppppppp()
+	local i
+	local statisticCount = GetCategoryNumAchievements(15520)
+	for i = 1, statisticCount do
+		local IDNumber, OOName, _, _, _, _, _, _, _, _, _ = GetAchievementInfo(15520, i)
+		print(OOName..":"..IDNumber)
+	end
+end
+
 function oilvlgetraidstat()
 	cfg.voi = {}
 	OilvlGetStatisticId("Dragonflight","Vault of the Incarnates",cfg.voi,true)
@@ -2957,12 +3030,6 @@ end
 function oilvlSetOSTATCN()
 	for i = 1,8 do
 		OSTATCN[i][5] = select(2,GetAchievementInfo(OSTATCN[i][1])):gsub(" %(.*%)","")..""
-	end
-	for i = 1,9 do
-		OSTATCN2[i][5] = select(2,GetAchievementInfo(OSTATCN2[i][1])):gsub(" %(.*%)","")..""
-	end
-	for i = 1,9 do
-		OSTATCN3[i][5] = select(2,GetAchievementInfo(OSTATCN3[i][1])):gsub(" %(.*%)","")..""
 	end
 end
 
@@ -3341,8 +3408,8 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses, Faction)
 	end
 
 	bigorp[CNname] = Save_orp(CNname, OSTATCN,8)
-	bigorp[CNname2] = Save_orp(CNname2, OSTATCN2, 9)
-	bigorp[CNname3] = Save_orp(CNname3, OSTATCN3, 9)
+	--bigorp[CNname2] = Save_orp(CNname2, OSTATCN2, 9)
+	--bigorp[CNname3] = Save_orp(CNname3, OSTATCN3, 9)
 
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
@@ -3362,12 +3429,12 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses, Faction)
 	-- check Achivements for raids
 	local RaidAchiv = {}
 	RaidAchiv[CNname] ={}
-	RaidAchiv[CNname2] ={}
-	RaidAchiv[CNname3] ={}
+	--RaidAchiv[CNname2] ={}
+	--RaidAchiv[CNname3] ={}
 
-	SaveAOTCCE(RaidAchiv[CNname],17107,17108)
-	SaveAOTCCE(RaidAchiv[CNname2],18253,18254)
-	SaveAOTCCE(RaidAchiv[CNname3],19350,19351)
+	SaveAOTCCE(RaidAchiv[CNname],40253,40254)
+	--SaveAOTCCE(RaidAchiv[CNname2],18253,18254)
+	--SaveAOTCCE(RaidAchiv[CNname3],19350,19351)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3436,7 +3503,7 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses, Faction)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
-		otooltip2:SetCell(2,4,"|cffffffff"..CNname2,"LEFT",2)
+		--[[otooltip2:SetCell(2,4,"|cffffffff"..CNname2,"LEFT",2)
 		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s)
 			Save_orp_vars(CNname2)
 			otooltip2:Clear()
@@ -3447,7 +3514,7 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses, Faction)
 			Save_orp_vars(CNname3)
 			otooltip2:Clear()
 			DrawOTooltip2()
-		end)
+		end)]]
 
 		line = otooltip2:AddLine()
 		otooltip2:SetCell(line, 1, "|cffffffff" ..orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"].. "|r", "LEFT", 5)
@@ -3772,8 +3839,8 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses, Faction)
 	end
 
 	bigorp[CNname] = Save_orp(CNname, OSTATCN, 8)
-	bigorp[CNname2] = Save_orp(CNname2, OSTATCN2, 9)
-	bigorp[CNname3] = Save_orp(CNname3, OSTATCN3, 9)
+	--bigorp[CNname2] = Save_orp(CNname2, OSTATCN2, 9)
+	--bigorp[CNname3] = Save_orp(CNname3, OSTATCN3, 9)
 
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
@@ -3792,12 +3859,12 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses, Faction)
 
 	local RaidAchiv = {}
 	RaidAchiv[CNname] ={}
-	RaidAchiv[CNname2] ={}
-	RaidAchiv[CNname3] ={}
+	--RaidAchiv[CNname2] ={}
+	--RaidAchiv[CNname3] ={}
 
-	SaveAOTCCE(RaidAchiv[CNname],17107,17108)
-	SaveAOTCCE(RaidAchiv[CNname2],18253,18254)
-	SaveAOTCCE(RaidAchiv[CNname3],19350,19351)
+	SaveAOTCCE(RaidAchiv[CNname],40253,40254)
+	--SaveAOTCCE(RaidAchiv[CNname2],18253,18254)
+	--SaveAOTCCE(RaidAchiv[CNname3],19350,19351)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3881,7 +3948,7 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses, Faction)
 		 	otooltip2:Clear()
 		 	DrawOTooltip2()
 		end)
-		otooltip2:SetCell(2,4,"|cffffffff"..CNname2,"LEFT",2)
+		--[[otooltip2:SetCell(2,4,"|cffffffff"..CNname2,"LEFT",2)
 		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s)
 			Save_orp_vars(CNname2)
 		 	otooltip2:Clear()
@@ -3892,7 +3959,7 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses, Faction)
 			Save_orp_vars(CNname3)
 		 	otooltip2:Clear()
 		 	DrawOTooltip2()
-		end)
+		end)]]
 
 		line = otooltip2:AddLine()
 		otooltip2:SetCell(line, 1, "|cffffffff" ..orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"].. "|r", "LEFT", 5)
@@ -5303,8 +5370,7 @@ function events:INSPECT_READY(guid)
 		OTCurrent=tempoc; -- current raid frame
 		OTCurrent2=tempoc2; -- current unit id
 		OTCurrent3=tempoc3; -- current raid frame number
-		oilvlSaveItemLevel(0)
-		C_Timer.After(1,function() oilvlSaveItemLevel(0) end)
+		C_Timer.After(1,function() oilvlSaveItemLevel(1) end)
 	end
 	--print(guid,GetTime() - LastInspectTime)
 	LastInspectTime = GetTime()
@@ -5411,8 +5477,8 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 			if Omover2 == 1 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
 					if cfg.raidmenuid == 1 then OGetRaidProgression2(CNname, OSTATCN, 8, UnitFactionGroup(rpunit)); end
-					if cfg.raidmenuid == 2 then OGetRaidProgression2(CNname2, OSTATCN2, 9, UnitFactionGroup(rpunit)); end
-					if cfg.raidmenuid == 3 then OGetRaidProgression2(CNname3, OSTATCN3, 9, UnitFactionGroup(rpunit)); end
+					--if cfg.raidmenuid == 2 then OGetRaidProgression2(CNname2, OSTATCN2, 9, UnitFactionGroup(rpunit)); end
+					--if cfg.raidmenuid == 3 then OGetRaidProgression2(CNname3, OSTATCN3, 9, UnitFactionGroup(rpunit)); end
 				else
 					--ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5422,8 +5488,8 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 			elseif Omover2 == 2 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
 					if cfg.raidmenuid == 1 then OGetRaidProgression3(CNname, OSTATCN, 8, UnitFactionGroup(rpunit)); end
-					if cfg.raidmenuid == 2 then OGetRaidProgression3(CNname2, OSTATCN2, 9, UnitFactionGroup(rpunit)); end
-					if cfg.raidmenuid == 3 then OGetRaidProgression3(CNname3, OSTATCN3, 9, UnitFactionGroup(rpunit)); end
+					--if cfg.raidmenuid == 2 then OGetRaidProgression3(CNname2, OSTATCN2, 9, UnitFactionGroup(rpunit)); end
+					--if cfg.raidmenuid == 3 then OGetRaidProgression3(CNname3, OSTATCN3, 9, UnitFactionGroup(rpunit)); end
 				else
 					--ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5433,8 +5499,8 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 			else
 				if UnitExists("target") and CheckInteractDistance("target", 1)  and rpsw then
 					if cfg.raidmenuid == 1 then OGetRaidProgression(CNname, OSTATCN, 8); end
-					if cfg.raidmenuid == 2 then OGetRaidProgression(CNname2, OSTATCN2, 9); end
-					if cfg.raidmenuid == 3 then OGetRaidProgression(CNname3, OSTATCN3, 9); end
+					--if cfg.raidmenuid == 2 then OGetRaidProgression(CNname2, OSTATCN2, 9); end
+					--if cfg.raidmenuid == 3 then OGetRaidProgression(CNname3, OSTATCN3, 9); end
 				else
 					--ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5573,10 +5639,10 @@ function events:PLAYER_LOGIN(...)
 			end
 		end
 	end
-	if C_AddOns.IsAddOnLoaded("Blizzard_AchievementUI") then
+	if C_AddOns.LoadAddOn("Blizzard_AchievementUI") then
 		unregisterBlizz()
-	--else
-		--hooksecurefunc(C_AddOns,"LoadAddOn",unregisterBlizz)
+	else
+		hooksecurefunc(C_AddOns,"LoadAddOn",unregisterBlizz)
 	end
 	------------------------------------------------------------------
 	--[[local function hookScript(table, fn, cb)
@@ -5610,13 +5676,13 @@ function events:PLAYER_LOGIN(...)
 				end
 				OMouseover();				
 			end
-		end				
-	end)
-
-	--cfg.sod = {};
-	--OilvlGetStatisticId("Shadowlands","Sanctum of Domination",cfg.sod,false)
-	--cfg.OSTATCN3 = {};
-	--OilvlGetStatisticId("Shadowlands","Sepulcher of the First Ones",cfg.OSTATCN3,false)
+		end
+		if not UnitExists("target") then
+			if otooltip then
+				otooltip:Clear()
+			end
+		end
+	end)	
 end
 
 function events:PLAYER_ENTERING_WORLD(...)
@@ -5783,6 +5849,11 @@ end
 
 -- Set GameTooltip
 function OMouseover()
+	if not UnitExists("target") then
+		if otooltip then
+			otooltip:Clear()
+		end
+	end
 	if InspectFrame and (InspectFrame.unit or InspectFrame:IsShown()) then return -1 end
 	if not UnitExists("target") or not CheckInteractDistance("target", 1) then
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
@@ -5839,10 +5910,9 @@ function OilvlRaidMenu()
 
 	local items = {
 		CNname,
-		CNname2,
-		CNname3
+		--CNname2,
+		--CNname3
 	}
-
 	local function OnClick(self)
 		LibDD:UIDropDownMenu_SetSelectedID(ORaidDropDownMenu, self:GetID())
 		cfg.raidmenuid = self:GetID()
@@ -5860,11 +5930,11 @@ function OilvlRaidMenu()
 		  LibDD:UIDropDownMenu_AddButton(info)
 	   end
 	end
-
+	cfg.raidmenuid = 1
 	LibDD:UIDropDownMenu_SetWidth(ORaidDropDownMenu, 150);
 	LibDD:UIDropDownMenu_Initialize(ORaidDropDownMenu, initialize)
 	LibDD:UIDropDownMenu_SetButtonWidth(ORaidDropDownMenu, 124)
-	LibDD:UIDropDownMenu_SetSelectedID(ORaidDropDownMenu, cfg.raidmenuid)
+	LibDD:UIDropDownMenu_SetSelectedID(ORaidDropDownMenu, cfg.raidmenuid)	
 	LibDD:UIDropDownMenu_JustifyText(ORaidDropDownMenu, "LEFT")
 end
 

@@ -1,8 +1,0 @@
-## Interface: 60003
-## Title: |cCC3333ffMiLvl|r
-## Notes: Comparative iLvl Tooltips
-## Author: Welbutrin of DragonBlight (US)
-## eMail: Support@thethreeitgoes.com
-## Version: 1.2
-MiLvl.lua
-MiLVL.xml

@@ -1,0 +1,40 @@
+lightweight tag 74004f69e4b37c6dd45e7957dc8db30a5b198cfc 2.5.1
+Author:	GitHub <noreply@github.com>
+Date:	Wed Aug 28 17:28:11 2024 +0200
+
+commit fa13e348a3542636c0f1499d2178802362637976
+Author: unverz06 <>
+Date:   Wed Aug 28 17:24:27 2024 +0200
+
+    chore(): update version
+
+commit fa13e348a3542636c0f1499d2178802362637976
+Author: unverz06 <>
+Date:   Wed Aug 28 17:24:27 2024 +0200
+
+    chore(): update version
+
+commit 5dfe74d4f7243f5f62831432e3d23c8b96218215
+Author: unverz06 <>
+Date:   Wed Aug 28 17:14:35 2024 +0200
+
+    fix(): bug with gossip bag, quest or conv and add check and msg
+
+commit b37bc91a50a797bd8ea5a67926b7212cc2e57abd
+Author: unverz06 <>
+Date:   Wed Aug 28 15:09:44 2024 +0200
+
+    add(): language variable for gossip multiple
+
+commit cdf244306c754355fc774369c78b0dceb51b8b0e
+Author: unverz06 <>
+Date:   Wed Aug 28 15:09:22 2024 +0200
+
+    feat(): fix if one (auto grab) if have multiple (ping and choose)
+
+commit cc57166eafadfdd8b3299e17b1b6aeeda08813d4
+Author: unverz06 <>
+Date:   Wed Aug 28 14:51:54 2024 +0200
+
+    fix(): always choose the first one if a gossip have multi quests response.
+
