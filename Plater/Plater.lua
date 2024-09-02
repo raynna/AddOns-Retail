@@ -8757,27 +8757,36 @@ end
         INNER_BOTTOM = 13,
     }
 
-	--check the setting 'only_damaged' and 'only_thename' for player characters. not critical code, can run slow
+		--check the setting 'only_damaged' and 'only_thename' for player characters. not critical code, can run slow
 	function Plater.ParseHealthSettingForPlayer (plateFrame, force) --private
-		local isFriendlyPlayerWithoutHealthBar = plateFrame.IsFriendlyPlayerWithoutHealthBar
-		if (DB_PLATE_CONFIG [ACTORTYPE_FRIENDLY_PLAYER].only_thename and not DB_PLATE_CONFIG [ACTORTYPE_FRIENDLY_PLAYER].only_damaged) then
-			if (not isFriendlyPlayerWithoutHealthBar) or force then
-				Plater.HideHealthBar (plateFrame.unitFrame, true)
+		-- Raynna: Updated so it will show health bar for players with under 100% or targeted player by you
+		local frame = plateFrame.unitFrame
+		local frameName = frame.name
+		local noHealthBar = plateFrame.IsFriendlyPlayerWithoutHealthBar
+		local config = DB_PLATE_CONFIG [ACTORTYPE_FRIENDLY_PLAYER]
+		if (config.only_thename and not config.only_damaged) then -- If only name setting is activated & only_damaged isnt activated
+			if (not noHealthBar) or force then
+				Plater.HideHealthBar (frame, true) --Hide Healthbar incase that happens
 			end
 			
-		elseif (DB_PLATE_CONFIG [ACTORTYPE_FRIENDLY_PLAYER].only_damaged) then
-			local healthBar = plateFrame.unitFrame.healthBar
-			if ((healthBar.currentHealth or 1) < (healthBar.currentHealthMax or 1)) then
-				if isFriendlyPlayerWithoutHealthBar or force then
-					Plater.ShowHealthBar (plateFrame.unitFrame)
+		elseif (config.only_damaged) then -- If setting only_Damaged is active, show both healthbars for targetted players & players who is under 100%
+			local healthBar = frame.healthBar
+			local targetName = GetUnitName("target")
+			local focusName = GetUnitName("focus")
+			local frameName = frame.name
+			local matchingTarget = (targetName == frameName) or (focusName == frameName)
+			local fullHealth = (healthBar.currentHealth or 1) >= (healthBar.currentHealthMax or 1)
+			if (not fullHealth or matchingTarget) then -- check if player has full health or is a target/focus
+				if noHealthBar or force then
+					Plater.ShowHealthBar (frame) -- show Healthbar for that player if met
 				end
 				
-			elseif (not isFriendlyPlayerWithoutHealthBar) or force then
-				Plater.HideHealthBar (plateFrame.unitFrame, true)
+			elseif (not noHealthBar) or force then
+				Plater.HideHealthBar (frame, true) -- Hide healthbar if not met & has active healthbar
 			end
 			
-		elseif isFriendlyPlayerWithoutHealthBar or force then
-			Plater.ShowHealthBar (plateFrame.unitFrame)
+		elseif noHealthBar or force then
+			Plater.ShowHealthBar (frame)
 		end
 	end
 

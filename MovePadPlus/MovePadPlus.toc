@@ -1,0 +1,14 @@
+## Interface: 110000, 110002
+## Title: Move Pad Plus
+## Notes: Several additional movement buttons for Move Pad.
+## Author: Fizzlemizz
+## Version: 11.0.0
+## IconTexture: Interface\AddOns\MovePadPlus\MPPIcon.blp
+## SavedVariables: MovePadPlus
+
+## X-WoWI-ID: 23723
+
+DropList Template.lua
+Config.lua
+MovePadPlus.lua
+Cursor.lua
